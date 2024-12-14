@@ -2,8 +2,8 @@
 
 This project implements secure password hashing using two algorithms:
 
-1. **SHA-256** (with OpenSSL)
-2. **Argon2** (with Libsodium)
+- **SHA-256** (with OpenSSL)
+- **Argon2** (with Libsodium)
 
 ## Overview
 
@@ -35,61 +35,46 @@ sudo apt-get install libsodium-dev
 
 # Install g++ (for compiling the C++ code)
 sudo apt-get install g++
-```
+Files
+SHA256_password.cpp: Implements SHA-256 password hashing using OpenSSL.
+argon2_password.cpp: Implements Argon2 password hashing using Libsodium.
+Usage
+Compile the code for SHA-256 and Argon2 hashing
+To compile the SHA-256 hashing code:
 
-## Files
-
-- **SHA256_password.cpp**: Implements SHA-256 password hashing using OpenSSL.
-- **argon2_password.cpp**: Implements Argon2 password hashing using Libsodium.
-
-## Usage
-
-### Compile the code for SHA-256 and Argon2 hashing.
-
-### To compile the **SHA-256 hashing code**:
-
-````bash
+bash
+Copy code
 g++ -o sha256_password_hashing SHA256_password.cpp -lssl -lcrypto
-
-### To compile the Argon2 hashing code:
-
-```bash
+To compile the Argon2 hashing code:
+bash
+Copy code
 g++ -o argon2_password_hashing argon2_password.cpp -lsodium
+Run the programs to hash a password securely
+For SHA-256:
 
-### Run the programs to hash a password securely.
-
-For **SHA-256**:
-
-```bash
+bash
+Copy code
 ./sha256_password_hashing
-
 For Argon2:
 
-```bash
+bash
+Copy code
 ./argon2_password_hashing
-
-### Verify the Password (in Both Algorithms)
-
+Verify the Password (in Both Algorithms)
 After hashing a password, you can verify the password by comparing the entered password's hash with the stored hash.
 The verification functions are built into both implementations.
 
-## How it Works
+How it Works
+The user enters a password.
+The password is hashed using either SHA-256 or Argon2 (with salt for both).
+The resulting hash is stored (you can print it to the console or save it to a file).
+When verifying a password, the entered password is hashed again, and the hashes are compared.
+Benefits
+SHA-256:
+While SHA-256 is secure for many purposes, it is not ideal for password hashing due to its speed, which makes it vulnerable to brute-force attacks.
 
-1. The user enters a password.
-2. The password is hashed using either SHA-256 or Argon2 (with salt for both).
-3. The resulting hash is stored (you can print it to the console or save it to a file).
-4. When verifying a password, the entered password is hashed again, and the hashes are compared.
+Argon2:
+Specifically designed for password hashing, Argon2 is computationally intensive and resistant to GPU-based attacks, making it a more secure choice for password storage.
 
-## Benefits
-
-- **SHA-256**:
-  While SHA-256 is secure for many purposes, it is not ideal for password hashing due to its speed, which makes it vulnerable to brute-force attacks.
-
-- **Argon2**:
-  Specifically designed for password hashing, Argon2 is computationally intensive and resistant to GPU-based attacks, making it a more secure choice for password storage.
-
-## License
-
+License
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-````
