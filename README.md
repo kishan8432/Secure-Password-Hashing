@@ -55,7 +55,7 @@ sudo apt-get install g++
 
 #### To compile the SHA-256 hashing code:
 ```bash
-g++ -o SHA256_password_hashing SHA256_password.cpp -lssl -lcrypto
+g++ -o sha256_password_hashing SHA256_password.cpp -lssl -lcrypto
 ```
 
 #### To compile the Argon2 hashing code:
