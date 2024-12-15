@@ -86,7 +86,6 @@ bool compare_hashes(unsigned char *hash1, unsigned char *hash2, unsigned int len
 
 int main()
 {
-    std::string password = "mysecurepassword"; // Password to hash
     unsigned char salt[SALT_SIZE];
     unsigned char stored_hash[HASH_LENGTH];
     unsigned char entered_hash[HASH_LENGTH];
@@ -97,10 +96,25 @@ int main()
         return 1; // Error generating salt
     }
 
+    // Accept user password
+    std::string password;
+    std::cout << "Enter your password: ";
+    std::cin >> password;
+
+    // Hash the password with the generated salt
     if (!hash_password(password, salt, stored_hash))
     {
         return 1; // Error hashing password
     }
+
+    // Output the stored hash (for demonstration purposes)
+    std::cout << "Password hashed successfully!" << std::endl;
+    std::cout << "Stored Hashed Password: ";
+    for (int i = 0; i < HASH_LENGTH; i++)
+    {
+        std::cout << std::hex << (int)stored_hash[i];
+    }
+    std::cout << std::endl;
 
     // Simulate entering the password for verification
     std::string entered_password;
@@ -128,14 +142,6 @@ int main()
     for (int i = 0; i < SALT_SIZE; i++)
     {
         std::cout << std::hex << (int)salt[i];
-    }
-    std::cout << std::endl;
-
-    // Print the stored hashed password (in hexadecimal format)
-    std::cout << "Stored Hashed Password: ";
-    for (int i = 0; i < HASH_LENGTH; i++)
-    {
-        std::cout << std::hex << (int)stored_hash[i];
     }
     std::cout << std::endl;
 

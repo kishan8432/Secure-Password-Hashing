@@ -1,53 +1,50 @@
 #include <iostream>
 #include <cstring>
-#include <argon2.h> // Include Argon2 library
+#include <sodium.h> // Include libsodium for password hashing
 
-#define SALT_LENGTH 16
-#define HASH_LENGTH 32
+#define SALT_LENGTH crypto_pwhash_SALTBYTES
+#define HASH_LENGTH crypto_pwhash_STRBYTES
 
-// Function to generate a random salt
-void generateSalt(unsigned char *salt, size_t length) {
-    for (size_t i = 0; i < length; ++i) {
-        salt[i] = rand() % 256; // Random byte
-    }
-}
+// Function to hash a password with Argon2 (using libsodium's crypto_pwhash)
+bool hashPassword(const std::string &password, unsigned char *hash)
+{
+    unsigned char salt[SALT_LENGTH];
+    randombytes_buf(salt, sizeof salt); // Generate a random salt
 
-// Function to hash a password with Argon2
-bool hashPassword(const std::string &password, unsigned char *salt, size_t saltLen, unsigned char *hash, size_t hashLen) {
-    int result = argon2id_hash_raw(
-        2,               // Number of iterations
-        1 << 16,         // Memory usage (64 MB)
-        1,               // Parallelism (threads)
-        password.c_str(), password.length(),
-        salt, saltLen,
-        hash, hashLen
-    );
-
-    return result == ARGON2_OK;
+    // Hash the password using Argon2 (via libsodium's crypto_pwhash_str)
+    return crypto_pwhash_str(
+               (char *)hash,                       // Output hash buffer
+               password.c_str(),                   // Input password
+               password.length(),                  // Length of the password
+               crypto_pwhash_OPSLIMIT_INTERACTIVE, // Iterations
+               crypto_pwhash_MEMLIMIT_INTERACTIVE  // Memory usage
+               ) == 0;
 }
 
 // Function to verify a password against a stored hash
-bool verifyPassword(const std::string &password, unsigned char *salt, size_t saltLen, unsigned char *storedHash, size_t hashLen) {
-    unsigned char computedHash[HASH_LENGTH];
-    if (!hashPassword(password, salt, saltLen, computedHash, HASH_LENGTH)) {
-        return false; // Hashing failed
-    }
-    return memcmp(computedHash, storedHash, HASH_LENGTH) == 0;
+bool verifyPassword(const std::string &password, const unsigned char *storedHash)
+{
+    return crypto_pwhash_str_verify((const char *)storedHash, password.c_str(), password.length()) == 0;
 }
 
-int main() {
+int main()
+{
+    // Initialize sodium (libsodium)
+    if (sodium_init() < 0)
+    {
+        std::cerr << "libsodium initialization failed!" << std::endl;
+        return 1;
+    }
+
     // Input Module: Accept user password
     std::string password;
     std::cout << "Enter password: ";
     std::cin >> password;
 
-    // Generate a random salt
-    unsigned char salt[SALT_LENGTH];
-    generateSalt(salt, SALT_LENGTH);
-
     // Hash the password
     unsigned char hash[HASH_LENGTH];
-    if (!hashPassword(password, salt, SALT_LENGTH, hash, HASH_LENGTH)) {
+    if (!hashPassword(password, hash))
+    {
         std::cerr << "Error: Password hashing failed!" << std::endl;
         return 1;
     }
@@ -55,7 +52,8 @@ int main() {
     // Output the hashed password (for demonstration purposes)
     std::cout << "Password hashed successfully!" << std::endl;
     std::cout << "Hash: ";
-    for (size_t i = 0; i < HASH_LENGTH; ++i) {
+    for (size_t i = 0; i < HASH_LENGTH; ++i)
+    {
         printf("%02x", hash[i]);
     }
     std::cout << std::endl;
@@ -65,9 +63,12 @@ int main() {
     std::cout << "Re-enter password for verification: ";
     std::cin >> passwordToVerify;
 
-    if (verifyPassword(passwordToVerify, salt, SALT_LENGTH, hash, HASH_LENGTH)) {
+    if (verifyPassword(passwordToVerify, hash))
+    {
         std::cout << "Password verification successful!" << std::endl;
-    } else {
+    }
+    else
+    {
         std::cerr << "Password verification failed!" << std::endl;
     }
 
