@@ -35,7 +35,8 @@ sudo apt-get install libsodium-dev
 
 # Install g++ (for compiling the C++ code)
 sudo apt-get install g++
-Files
+
+## Files
 SHA256_password.cpp: Implements SHA-256 password hashing using OpenSSL.
 argon2_password.cpp: Implements Argon2 password hashing using Libsodium.
 Usage
