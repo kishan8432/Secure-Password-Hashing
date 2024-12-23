@@ -63,6 +63,7 @@ int main()
     }
     std::cout << std::endl;
 
+
     if (verifyPassword(passwordToVerify, hash))
     {
         std::cout << "Password verification successful!" << std::endl;
