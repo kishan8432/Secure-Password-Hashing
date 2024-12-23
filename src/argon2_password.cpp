@@ -41,6 +41,11 @@ int main()
     std::cout << "Enter password: ";
     std::cin >> password;
 
+    // Validate the password
+    std::string passwordToVerify;
+    std::cout << "Re-enter password for verification: ";
+    std::cin >> passwordToVerify;
+
     // Hash the password
     unsigned char hash[HASH_LENGTH];
     if (!hashPassword(password, hash))
@@ -57,11 +62,6 @@ int main()
         printf("%02x", hash[i]);
     }
     std::cout << std::endl;
-
-    // Validate the password
-    std::string passwordToVerify;
-    std::cout << "Re-enter password for verification: ";
-    std::cin >> passwordToVerify;
 
     if (verifyPassword(passwordToVerify, hash))
     {
