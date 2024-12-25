@@ -121,8 +121,6 @@ int main()
     }
     std::cout << std::endl;
 
-    
-
     // Hash the entered password with the stored salt
     if (!hash_password(entered_password, salt, entered_hash))
     {
